@@ -57,55 +57,52 @@ public class Solution {
 
             for(int i = 0 ; i < N ; i++) {
                 for(int j = 0 ; j < N ; j++) {
-                    dist[i][j] = go(j, j+M, i, 0);
-                    if(dist[i][j] > max) {
+                    go(j, j-1, j+M, i, 0, 0, 0);
+                }
+            }
+
+            for(int i = 0 ; i < N ; i++) {
+                for(int j = 0 ; j < N ; j++) {
+                    if(dist[i][j] >= max) {
                         max = dist[i][j];
                         max_x = j;
                         max_y = i;
                     }
                 }
             }
-
             int second = 0;
             for(int i = 0 ; i< N ; i++) {
                 for(int j = 0 ; j < N ; j++) {
-                    if(dist[i][j] > second) {
-                        if(i == max_y && (j >= max_x && j <= max_x+M)) {
+                    if(dist[i][j] >= second) {
+                        if(i == max_y && (j+M-1 >= max_x && j <= max_x+M-1)) {
                             continue;
                         }
                         second = dist[i][j];
                     }
                 }
+
             }
 
-
-            System.out.println(max + second);
+            System.out.println("#" + t + " : " + (max + second));
         }
 
 
     }
 
-    private static int go(int x, int x_end, int y, int count) {
-        if(count > M) return map[y][x];
-        int max = 0;
-        for(int i = x+1 ; i <= x_end ; i++) {
-            if(i > N) continue;
-            int temp = go(i, x_end, y, count + 1) + map[y][x];
-            if(temp<=C) {
-                max = Math.max(max, temp);
-            }
 
+    private static void go(int start_x, int x, int x_end, int y, int count, int current, int result) {
 
-        }
-        for(int i = x+1 ; i <= x_end ; i++) {
-            if(i > N) continue;
-            int temp = go(i, x_end, y, count);
-            if(temp<=C) {
-                max = Math.max(max, temp);
+        dist[y][start_x] = Math.max(dist[y][start_x], result);
+
+        if(count >= M) return;
+        for(int i = x+1 ; i < x_end ; i++) {
+            if(i >= N) continue;
+            if(current + map[y][i]<=C) {
+                go(start_x, i, x_end, y, count + 1, current+map[y][i], result + map[y][i]*map[y][i]);
             }
         }
-        return max;
 
     }
+
 
 }
